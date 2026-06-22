@@ -1,9 +1,9 @@
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import javax.swing.JOptionPane;
 
 public class telaLogin extends javax.swing.JFrame {
 
@@ -91,24 +91,19 @@ public class telaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        try { Connection conn = conexao.Conexao.conectar();
-        
-        String sql="INSERT INTO usuarios (usuario,senha) VALUES (?,?)";
-        
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "select * from usuarios where usuario = ?  And senha = ?";
+        try { 
+        Connection conn = conexao.Conexao.conectar();
+        PreparedStatement stmt = conn.prepareStatement(sql); 
             
-            stmt.setString(1, txtUsuario);
-            stmt.setString(2, txtSenha);
+            stmt.setString(1, txtUsuario.getText());
+            stmt.setString(2, txtSenha.getText());
             
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next(); // Retorna true se encontrar o usuário correspondente
-            }
-            
+           
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + ex.getMessage(), "Erro SQL", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }        
+            
+        }      
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

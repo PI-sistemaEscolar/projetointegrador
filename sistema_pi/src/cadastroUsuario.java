@@ -2,7 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import javax.swing.JOptionPane;
 /**
  *
  * @author guest.jb
@@ -46,6 +50,11 @@ public class cadastroUsuario extends javax.swing.JFrame {
         jLabel4.setText("Senha");
 
         btnCadastrar.setText("cadastrar");
+        btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,6 +105,22 @@ public class cadastroUsuario extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
+        String sql = "insert into usuario (usuario, senha) values (?,?)";
+        try { 
+        Connection conn = conexao.Conexao.conectar();
+        PreparedStatement stmt = conn.prepareStatement(sql); 
+            
+            stmt.setString(1, txtUsuario.getText());
+            stmt.setString(2, txtSenha.getText());
+            
+           
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + ex.getMessage(), "Erro SQL", JOptionPane.ERROR_MESSAGE);
+            
+        } 
+    }//GEN-LAST:event_btnCadastrarActionPerformed
 
     /**
      * @param args the command line arguments
