@@ -1,12 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 
-/**
- *
- * @author guest.jb
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import java.sql.Connection;
+
 public class telaLogin extends javax.swing.JFrame {
 
     /**
@@ -42,6 +40,11 @@ public class telaLogin extends javax.swing.JFrame {
         jLabel3.setText("senha");
 
         btnLogin.setText("LOGIN");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,6 +89,27 @@ public class telaLogin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        try { Connection conn = conexao.Conexao.conectar();
+        
+        String sql="INSERT INTO usuarios (usuario,senha) VALUES (?,?)";
+        
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, txtUsuario);
+            stmt.setString(2, txtSenha);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next(); // Retorna true se encontrar o usuário correspondente
+            }
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + ex.getMessage(), "Erro SQL", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }        
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
