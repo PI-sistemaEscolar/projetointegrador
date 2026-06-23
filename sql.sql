@@ -28,12 +28,9 @@ CREATE TABLE `alunos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) DEFAULT NULL,
   `matricula` varchar(20) DEFAULT NULL,
-  `data_nascimento` date NOT NULL,
-  `cpf` varchar(11) DEFAULT NULL,
   `turma_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `matricula` (`matricula`),
-  UNIQUE KEY `cpf` (`cpf`),
   KEY `turma_id` (`turma_id`),
   CONSTRAINT `alunos_ibfk_1` FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -67,7 +64,6 @@ DROP TABLE IF EXISTS `turmas`;
 CREATE TABLE `turmas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome_turma` varchar(100) DEFAULT NULL,
-  `turno` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nome_turma` (`nome_turma`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
