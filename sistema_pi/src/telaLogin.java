@@ -99,15 +99,11 @@ public class telaLogin extends javax.swing.JFrame {
             stmt.setString(1, txtUsuario.getText());
             stmt.setString(2, txtSenha.getText());
             
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next(); 
-            }
-            
+           
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + ex.getMessage(), "Erro SQL", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
             
+        }      
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
