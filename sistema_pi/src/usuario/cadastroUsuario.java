@@ -124,19 +124,7 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        String sql = "insert into usuario (usuario, senha) values (?,?)";
-        try { 
-        Connection conn = conexao.Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql); 
-            
-            stmt.setString(1, txtUsuario.getText());
-            stmt.setString(2, txtSenha.getText());
-            
-           
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + ex.getMessage(), "Erro SQL", JOptionPane.ERROR_MESSAGE);
-            
-        } 
+        
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     /**
