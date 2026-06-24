@@ -45,6 +45,11 @@ public class TelaInicial extends javax.swing.JFrame {
         });
 
         jButton2.setText("TURMAS");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -56,6 +61,11 @@ public class TelaInicial extends javax.swing.JFrame {
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         jButton3.setText("USUÁRIOS");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -110,6 +120,20 @@ public class TelaInicial extends javax.swing.JFrame {
         
         this.dispose();
     }//GEN-LAST:event_btnAlunosActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Turma.OpcoesTurma Turma  = new Turma.OpcoesTurma();
+        Turma.setVisible(true);
+        
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        usuario.OpcoesUsuarios usuarios  = new usuario.OpcoesUsuarios();
+        usuarios.setVisible(true);
+        
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
