@@ -53,13 +53,33 @@ public class OpcoesTurma extends javax.swing.JFrame {
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         btnAddTurma.setText("ADICIONAR");
+        btnAddTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTurmaActionPerformed(evt);
+            }
+        });
 
         btnRemoverTurma.setText("REMOVER");
+        btnRemoverTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverTurmaActionPerformed(evt);
+            }
+        });
 
         btnEditarTurma.setText("EDITAR");
+        btnEditarTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarTurmaActionPerformed(evt);
+            }
+        });
 
         btnVoltarTurma.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnVoltarTurma.setText("Voltar");
+        btnVoltarTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVoltarTurmaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -116,6 +136,27 @@ public class OpcoesTurma extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTurmaActionPerformed
+       TelaCriarTurma TelaCriarTurma  = new TelaCriarTurma();
+        TelaCriarTurma.setVisible(true);
+    }//GEN-LAST:event_btnAddTurmaActionPerformed
+
+    private void btnEditarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarTurmaActionPerformed
+        EditarTurma EditarTurma  = new EditarTurma();
+        EditarTurma.setVisible(true);
+    }//GEN-LAST:event_btnEditarTurmaActionPerformed
+
+    private void btnRemoverTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverTurmaActionPerformed
+       RemoverTurma RemoverTurma = new RemoverTurma();
+       RemoverTurma.setVisible(true);
+    }//GEN-LAST:event_btnRemoverTurmaActionPerformed
+
+    private void btnVoltarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarTurmaActionPerformed
+        telasIniciais.TelaInicial telaInicial  = new telasIniciais.TelaInicial();
+        telaInicial.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnVoltarTurmaActionPerformed
 
     /**
      * @param args the command line arguments
