@@ -49,6 +49,11 @@ public class RemoverTurma extends javax.swing.JFrame {
 
         btnvoltar.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnvoltar.setText("Voltar");
+        btnvoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnvoltarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,6 +106,10 @@ public class RemoverTurma extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvoltarActionPerformed
+      this.dispose();
+    }//GEN-LAST:event_btnvoltarActionPerformed
 
     /**
      * @param args the command line arguments
