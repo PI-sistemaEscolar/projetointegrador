@@ -4,7 +4,12 @@ package usuario;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 /**
  *
  * @author guest.jb
@@ -16,6 +21,39 @@ public class OpcoesUsuarios extends javax.swing.JFrame {
      */
     public OpcoesUsuarios() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para poder manipular os itens da JList
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select usuario from usuarios order by usuario asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona no modelo
+        modeloLista.addElement(rs.getString("usuario"));
+    }
+
+    // Aplica o modelo preenchido na sua JList (isso limpa os antigos e atualiza)
+    lstUsuarios.setModel(modeloLista);
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -28,7 +66,7 @@ public class OpcoesUsuarios extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        lstUsuarios = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -39,12 +77,12 @@ public class OpcoesUsuarios extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        lstUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lstUsuarios);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel1.setText("USUÁRIOS");
@@ -200,8 +238,8 @@ public class OpcoesUsuarios extends javax.swing.JFrame {
     private javax.swing.JButton btnVoltar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JList<String> lstUsuarios;
     // End of variables declaration//GEN-END:variables
 }

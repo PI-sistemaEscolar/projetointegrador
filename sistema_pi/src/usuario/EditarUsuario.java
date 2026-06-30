@@ -1,5 +1,10 @@
 package usuario;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -16,6 +21,36 @@ public class EditarUsuario extends javax.swing.JFrame {
      */
     public EditarUsuario() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Limpa os itens antigos da combo box para não duplicar
+    cbxUsuario.removeAllItems();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select usuario from usuarios order by usuario asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
+        cbxUsuario.addItem(rs.getString("usuario"));
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -30,22 +65,22 @@ public class EditarUsuario extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtNomeAtual = new javax.swing.JTextField();
-        txtSenhaAtual = new javax.swing.JTextField();
+        txtSenha = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtNovoNome = new javax.swing.JTextField();
+        txtNovoUsuario = new javax.swing.JTextField();
         txtNovaSenha = new javax.swing.JTextField();
         btnAtualizar = new javax.swing.JButton();
         btnVoltar = new javax.swing.JButton();
+        cbxUsuario = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel1.setText("EDITAR USUÁRIO");
 
-        jLabel2.setText("Nome Atual");
+        jLabel2.setText("Usuario");
 
         jLabel3.setText("Senha Atual");
 
@@ -54,6 +89,11 @@ public class EditarUsuario extends javax.swing.JFrame {
         jLabel5.setText("Nova Senha");
 
         btnAtualizar.setText("ATUALIZAR");
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizarActionPerformed(evt);
+            }
+        });
 
         btnVoltar.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnVoltar.setText("VOLTAR");
@@ -63,6 +103,8 @@ public class EditarUsuario extends javax.swing.JFrame {
             }
         });
 
+        cbxUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,31 +112,31 @@ public class EditarUsuario extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
-                        .addComponent(txtNomeAtual, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtSenhaAtual, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNovoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNovoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAtualizar, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnVoltar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnVoltar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbxUsuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -105,17 +147,17 @@ public class EditarUsuario extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNomeAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtSenhaAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtNovoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNovoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -133,6 +175,79 @@ public class EditarUsuario extends javax.swing.JFrame {
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+        String usuarioSelecionado = (String) cbxUsuario.getSelectedItem();
+String senhaDigitada = txtSenha.getText();
+// Novos inputs adicionados para a alteração
+String novoUsuario = txtNovoUsuario.getText();
+String novaSenha = txtNovaSenha.getText();
+
+// Validação dos campos antigos e novos
+if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Selecione o usuário que deseja alterar!");
+} else if (senhaDigitada.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Digite a senha atual para confirmar a alteração!");
+} else if (novoUsuario.trim().isEmpty() || novaSenha.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Preencha o novo usuário e a nova senha!");
+} else {
+    
+    try {
+        Connection conn = conexao.conexao.conectar();
+
+        // SQL para buscar a senha correta do usuário selecionado
+        String sqlBuscar = "select senha from usuarios where usuario = ?;";
+        PreparedStatement stmtBuscar = conn.prepareStatement(sqlBuscar);
+        stmtBuscar.setString(1, usuarioSelecionado);
+        
+        ResultSet rs = stmtBuscar.executeQuery();
+
+        // Verifica se encontrou o usuário no banco
+        if (rs.next()) {
+            String senhaDoBanco = rs.getString("senha");
+
+            // Compara a senha digitada com a senha do banco
+            if (senhaDigitada.equals(senhaDoBanco)) {
+                
+                // SQL para ATUALIZAR o usuário e a senha
+                String sqlAtualizar = "update usuarios set usuario = ?, senha = ? where usuario = ?;";
+                PreparedStatement stmtAtualizar = conn.prepareStatement(sqlAtualizar);
+                
+                // Configura os parâmetros do UPDATE
+                stmtAtualizar.setString(1, novoUsuario);
+                stmtAtualizar.setString(2, novaSenha);
+                stmtAtualizar.setString(3, usuarioSelecionado); // Filtro do WHERE
+                
+                stmtAtualizar.executeUpdate();
+                
+                JOptionPane.showMessageDialog(null, "Usuário e senha alterados com sucesso!");
+                
+                // Limpa todos os campos de texto
+                txtSenha.setText("");
+                txtNovoUsuario.setText("");
+                txtNovaSenha.setText("");
+                
+                // ATUALIZAÇÃO AUTOMÁTICA: Recarrega a combo box se necessário
+                
+                stmtAtualizar.close();
+            } else {
+                JOptionPane.showMessageDialog(null, "Senha atual incorreta! Não foi possível alterar.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuário não encontrado no sistema.");
+        }
+
+        // Fecha os recursos de leitura
+        rs.close();
+        stmtBuscar.close();
+        conn.close();
+
+    } catch(Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Erro ao tentar alterar: " + e.getMessage());
+    }
+}
+    }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -172,15 +287,15 @@ public class EditarUsuario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JComboBox<String> cbxUsuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField txtNomeAtual;
     private javax.swing.JTextField txtNovaSenha;
-    private javax.swing.JTextField txtNovoNome;
-    private javax.swing.JTextField txtSenhaAtual;
+    private javax.swing.JTextField txtNovoUsuario;
+    private javax.swing.JTextField txtSenha;
     // End of variables declaration//GEN-END:variables
 }
