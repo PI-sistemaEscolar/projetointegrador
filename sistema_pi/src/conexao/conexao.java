@@ -1,4 +1,4 @@
-/*  
+
 package conexao;
 
     import java.sql.Connection;
@@ -6,7 +6,7 @@ package conexao;
     import java.sql.SQLException;
 
     public class conexao {
-        public static String URL = "jdbc:mysql://localhost:3306/PI_sistema_escolar";
+        public static String URL = "jdbc:mysql://localhost:3306/pi_sistema_escolar";
         public static String USUARIO ="root";
         public static String SENHA="root";
 
@@ -24,4 +24,3 @@ package conexao;
             }
          }
     }
-*/

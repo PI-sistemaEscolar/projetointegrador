@@ -130,6 +130,26 @@ public class cadastroUsuario extends javax.swing.JFrame {
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         
+        try{
+            Connection conn = conexao.conexao.conectar();
+
+            String Sql = "insert into usuarios (usuario, senha) values (?, ?);";
+
+            PreparedStatement stmt = conn.prepareStatement(Sql);
+
+            stmt.setString(1, txtUsuario.getText());
+            stmt.setString(2, txtSenha.getText());
+
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(null, "Salvo!");
+
+            stmt.close();
+            conn.close();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
