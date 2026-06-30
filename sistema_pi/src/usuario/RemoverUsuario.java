@@ -1,5 +1,10 @@
 package usuario;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -16,6 +21,36 @@ public class RemoverUsuario extends javax.swing.JFrame {
      */
     public RemoverUsuario() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Limpa os itens antigos da combo box para não duplicar
+    cbxUsuario.removeAllItems();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select usuario from usuarios order by usuario asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
+        cbxUsuario.addItem(rs.getString("usuario"));
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -41,7 +76,12 @@ public class RemoverUsuario extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel1.setText("REMOVER USUÁRIO");
 
-        cbxUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "selecionar" }));
+        cbxUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("usuário");
 
@@ -54,6 +94,11 @@ public class RemoverUsuario extends javax.swing.JFrame {
         jLabel4.setText("ATENÇÃO: ESSA AÇÃO NÃO PODE SER DESFEITA");
 
         btnApagar.setText("APAGAR");
+        btnApagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApagarActionPerformed(evt);
+            }
+        });
 
         btnVoltar.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnVoltar.setText("VOLTAR");
@@ -122,6 +167,74 @@ public class RemoverUsuario extends javax.swing.JFrame {
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
        this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void cbxUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxUsuarioActionPerformed
+       
+    }//GEN-LAST:event_cbxUsuarioActionPerformed
+
+    private void btnApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApagarActionPerformed
+        // 1. Pega o usuário que está selecionado na sua ComboBox
+String usuarioSelecionado = (String) cbxUsuario.getSelectedItem();
+String senhaDigitada = txtSenha.getText();
+
+// Validação básica se há algum usuário selecionado e se a senha não está vazia
+if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Selecione um usuário para excluir!");
+} else if (senhaDigitada.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Digite a senha para confirmar a exclusão!");
+} else {
+    
+    try {
+        Connection conn = conexao.conexao.conectar();
+
+        // SQL para buscar a senha correta do usuário selecionado
+        String sqlBuscar = "select senha from usuarios where usuario = ?;";
+        PreparedStatement stmtBuscar = conn.prepareStatement(sqlBuscar);
+        stmtBuscar.setString(1, usuarioSelecionado);
+        
+        ResultSet rs = stmtBuscar.executeQuery();
+
+        // Verifica se encontrou o usuário no banco
+        if (rs.next()) {
+            String senhaDoBanco = rs.getString("senha");
+
+            // Compara a senha digitada com a senha do banco usando .equals()
+            if (senhaDigitada.equals(senhaDoBanco)) {
+                
+                // SQL para deletar o usuário
+                String sqlDeletar = "delete from usuarios where usuario = ?;";
+                PreparedStatement stmtDeletar = conn.prepareStatement(sqlDeletar);
+                stmtDeletar.setString(1, usuarioSelecionado);
+                
+                stmtDeletar.execute();
+                
+                JOptionPane.showMessageDialog(null, "Usuário excluído com sucesso!");
+                
+                // Limpa o campo de senha
+                txtSenha.setText("");
+                
+                // ATUALIZAÇÃO AUTOMÁTICA: Recarrega a combo box para sumir o usuário deletado
+               
+                
+                stmtDeletar.close();
+            } else {
+                JOptionPane.showMessageDialog(null, "Senha incorreta! Não foi possível excluir.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuário não encontrado no sistema.");
+        }
+
+        // Fecha os recursos de leitura
+        rs.close();
+        stmtBuscar.close();
+        conn.close();
+
+    } catch(Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Erro ao tentar excluir: " + e.getMessage());
+    }
+}
+    }//GEN-LAST:event_btnApagarActionPerformed
 
     /**
      * @param args the command line arguments
