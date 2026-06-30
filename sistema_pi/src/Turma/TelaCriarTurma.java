@@ -1,19 +1,13 @@
 package Turma;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
 
-/**
- *
- * @author guest.jb
- */
 public class TelaCriarTurma extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaCriarTurma
-     */
+    
     public TelaCriarTurma() {
         initComponents();
     }
@@ -41,10 +35,20 @@ public class TelaCriarTurma extends javax.swing.JFrame {
 
         lblTurno.setText("Turno");
 
-        cbTurno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione..", "Matutino", "Vespertino", "Noturno" }));
+        cbTurno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Matutino", "Vespertino", "Noturno" }));
+        cbTurno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbTurnoActionPerformed(evt);
+            }
+        });
 
         btnCadastrarTurma.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnCadastrarTurma.setText("Cadastrar");
+        btnCadastrarTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastrarTurmaActionPerformed(evt);
+            }
+        });
 
         btnVoltar.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnVoltar.setText("Voltar");
@@ -109,6 +113,32 @@ public class TelaCriarTurma extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
 
+    private void btnCadastrarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarTurmaActionPerformed
+        String turno = (String) cbTurno.getSelectedItem();
+        try{ 
+            Connection conn = conexao.conexao.conectar();
+    
+            String sql="INSERT INTO turmas(nome_turma,turno) VALUES (?,?)";
+    
+            PreparedStatement stmt = conn.prepareStatement(sql);
+    
+            stmt.setString(1,txtNomeTurma.getText());
+            stmt.setString(2,turno);
+    
+            stmt.execute();
+            JOptionPane.showMessageDialog(null, "Salvo!");
+            stmt.close();
+            conn.close();   
+    }catch(Exception e){
+            e.printStackTrace();
+}
+    }//GEN-LAST:event_btnCadastrarTurmaActionPerformed
+
+    private void cbTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTurnoActionPerformed
+    String turno = cbTurno.getSelectedItem().toString();
+                                  // TODO add your handling code here:
+    }//GEN-LAST:event_cbTurnoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -143,6 +173,7 @@ public class TelaCriarTurma extends javax.swing.JFrame {
             }
         });
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrarTurma;
