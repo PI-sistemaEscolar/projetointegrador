@@ -129,7 +129,7 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        if (txtSenha.getText() == txtConfirmarsenha.getText()){
+        if (txtSenha.getText().equals(txtConfirmarsenha.getText())){
         try{
             Connection conn = conexao.conexao.conectar();
 
