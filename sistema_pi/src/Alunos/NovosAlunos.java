@@ -16,6 +16,36 @@ public class NovosAlunos extends javax.swing.JFrame {
      */
     public NovosAlunos() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Limpa os itens antigos da combo box para não duplicar
+    cbTurma.removeAllItems();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select nome_turma from turmas order by nome_turma asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
+        cbTurma.addItem(rs.getString("nome_turma"));
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -128,6 +158,7 @@ public class NovosAlunos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrar1ActionPerformed
+        String turma = (String) cbTurma.getSelectedItem();
         try{
             Connection conn = conexao.conexao.conectar();
 
@@ -135,7 +166,7 @@ public class NovosAlunos extends javax.swing.JFrame {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,txtNome.getText());
             stmt.setInt(2,Integer.parseInt(txtMatricula.getText()));
-            stmt.setString(3, cbTurma.getSelectedItem().toString());
+            stmt.setString(3,turma);
 
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Salvo!");
