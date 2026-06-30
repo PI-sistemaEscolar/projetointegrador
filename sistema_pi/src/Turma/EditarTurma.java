@@ -4,6 +4,11 @@
  */
 package Turma;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author guest.jb
@@ -15,6 +20,36 @@ public class EditarTurma extends javax.swing.JFrame {
      */
     public EditarTurma() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Limpa os itens antigos da combo box para não duplicar
+    cbEditarTurma.removeAllItems();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select nome_turma from turmas order by nome_turma asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
+        cbEditarTurma.addItem(rs.getString("nome_turma"));
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -28,16 +63,15 @@ public class EditarTurma extends javax.swing.JFrame {
 
         lblTurmasEd = new javax.swing.JLabel();
         lblTurmasAtivasEd = new javax.swing.JLabel();
-        lblTurmasAtivasEd1 = new javax.swing.JLabel();
         lblTurmasAtivasEd2 = new javax.swing.JLabel();
-        lblTurmasTurno = new javax.swing.JLabel();
         lblTurmasTurnoEd = new javax.swing.JLabel();
-        txtNomeTurma = new javax.swing.JTextField();
-        txtTurnoAtual = new javax.swing.JTextField();
         txtNomeTurmaEd = new javax.swing.JTextField();
         txtTurnoEd = new javax.swing.JTextField();
         btnAtualizar = new javax.swing.JButton();
         btnVoltar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        cbEditarTurma = new javax.swing.JComboBox<>();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,15 +80,16 @@ public class EditarTurma extends javax.swing.JFrame {
 
         lblTurmasAtivasEd.setText("Editar Turmas:");
 
-        lblTurmasAtivasEd1.setText("Nome da Turma");
-
         lblTurmasAtivasEd2.setText("Novo Nome da Turma");
-
-        lblTurmasTurno.setText("Turno Atual");
 
         lblTurmasTurnoEd.setText("Novo Turno ");
 
         btnAtualizar.setText("Atualizar");
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizarActionPerformed(evt);
+            }
+        });
 
         btnVoltar.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         btnVoltar.setText("Voltar");
@@ -64,37 +99,51 @@ public class EditarTurma extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Turma");
+
+        cbEditarTurma.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbEditarTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEditarTurmaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAtualizar)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(lblTurmasEd)
-                        .addComponent(lblTurmasAtivasEd)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTurmasAtivasEd1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNomeTurma, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTurmasAtivasEd2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNomeTurmaEd))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTurmasTurno)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtTurnoAtual))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTurmasTurnoEd)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtTurnoEd))))
-                .addContainerGap(73, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnVoltar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnAtualizar)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(lblTurmasEd)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(lblTurmasAtivasEd2)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txtNomeTurmaEd, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(lblTurmasTurnoEd)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txtTurnoEd))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(lblTurmasAtivasEd)
+                                            .addGap(86, 86, 86))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 14, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnVoltar, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cbEditarTurma, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(69, 69, 69)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -104,15 +153,13 @@ public class EditarTurma extends javax.swing.JFrame {
                 .addComponent(lblTurmasEd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTurmasAtivasEd)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTurmasAtivasEd1)
-                    .addComponent(txtNomeTurma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTurmasTurno)
-                    .addComponent(txtTurnoAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                    .addComponent(jLabel1)
+                    .addComponent(cbEditarTurma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblTurmasAtivasEd2)
                     .addComponent(txtNomeTurmaEd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -133,6 +180,33 @@ public class EditarTurma extends javax.swing.JFrame {
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
        this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+         String turma = (String) cbEditarTurma.getSelectedItem();
+        try{
+          Connection conn = conexao.conexao.conectar();
+          
+          String sql = "UPDATE turmas SET nome_turma=?, turno=? where nome_turma = ?";
+          
+          PreparedStatement stmt = conn.prepareStatement(sql);
+          
+          stmt.setString(1,txtNomeTurmaEd.getText());
+          stmt.setString(2,txtTurnoEd.getText());
+          stmt.setString(3,turma);
+       
+          stmt.execute();
+          JOptionPane.showMessageDialog(null, "Atualizado!");
+          stmt.close();
+          conn.close();
+           }catch(Exception e){
+               e.printStackTrace();
+           }        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnAtualizarActionPerformed
+
+    private void cbEditarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEditarTurmaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbEditarTurmaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -172,15 +246,14 @@ public class EditarTurma extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JComboBox<String> cbEditarTurma;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblTurmasAtivasEd;
-    private javax.swing.JLabel lblTurmasAtivasEd1;
     private javax.swing.JLabel lblTurmasAtivasEd2;
     private javax.swing.JLabel lblTurmasEd;
-    private javax.swing.JLabel lblTurmasTurno;
     private javax.swing.JLabel lblTurmasTurnoEd;
-    private javax.swing.JTextField txtNomeTurma;
     private javax.swing.JTextField txtNomeTurmaEd;
-    private javax.swing.JTextField txtTurnoAtual;
     private javax.swing.JTextField txtTurnoEd;
     // End of variables declaration//GEN-END:variables
 }
