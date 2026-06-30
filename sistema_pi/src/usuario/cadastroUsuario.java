@@ -129,7 +129,7 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        
+        if (txtSenha.getText() == txtConfirmarsenha.getText()){
         try{
             Connection conn = conexao.conexao.conectar();
 
@@ -143,13 +143,17 @@ public class cadastroUsuario extends javax.swing.JFrame {
             stmt.execute();
 
             JOptionPane.showMessageDialog(null, "Salvo!");
-
+            txtUsuario.setText("");
+            txtSenha.setText("");
             stmt.close();
             conn.close();
         }catch(Exception e) {
             e.printStackTrace();
         }
-        
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Senhas não coincidem! Confirme sua senha!");
+        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
