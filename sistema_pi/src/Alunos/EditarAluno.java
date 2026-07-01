@@ -164,6 +164,7 @@ public class EditarAluno extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+<<<<<<< HEAD
         String sql = "SELECT nome, turma from alunos WHERE matricula = ?";
         try{
             Connection conn = conexao.conexao.conectar();
@@ -183,6 +184,28 @@ public class EditarAluno extends javax.swing.JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+=======
+        String turma = (String) cbTurma.getSelectedItem();
+    try {
+        Connection conn = conexao.conexao.conectar();
+                String sql = "UPDATE alunos SET nome =? WHERE matricula =?"; 
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, txtNome.getText()); 
+        stmt.setString(2, turma); 
+        
+        stmt.execute();
+        
+        JOptionPane.showMessageDialog(null, "Atualizado");
+        stmt.close();
+        conn.close();
+        
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+
+>>>>>>> 03324ebcb38d9d49f606ac34798edecaf658785c
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
