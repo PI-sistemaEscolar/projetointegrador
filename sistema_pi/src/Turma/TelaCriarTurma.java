@@ -117,7 +117,6 @@ public class TelaCriarTurma extends javax.swing.JFrame {
         String turno = (String) cbTurno.getSelectedItem();
         try{ 
             Connection conn = conexao.conexao.conectar();
-    
             String sql="INSERT INTO turmas(nome_turma,turno) VALUES (?,?)";
     
             PreparedStatement stmt = conn.prepareStatement(sql);

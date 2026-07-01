@@ -17,35 +17,31 @@ public class NovosAlunos extends javax.swing.JFrame {
     public NovosAlunos() {
         initComponents();
         try {
-    // Abre a conexão usando a sua classe de conexão
-    Connection conn = conexao.conexao.conectar();
+            Connection conn = conexao.conexao.conectar();
 
-    // Limpa os itens antigos da combo box para não duplicar
-    cbTurma.removeAllItems();
+            // Limpa os itens antigos da combo box
+            cbTurma.removeAllItems();
 
-    // Comando SQL para buscar os usuários
-    String Sql = "select nome_turma from turmas order by nome_turma asc;";
+            // Comando SQL para buscar os nomes das turmas
+            String Sql = "select nome_turma from turmas order by nome_turma asc;";
 
-    PreparedStatement stmt = conn.prepareStatement(Sql);
-    
-    // Executa a consulta e guarda os resultados no ResultSet
-    ResultSet rs = stmt.executeQuery();
+            PreparedStatement stmt = conn.prepareStatement(Sql);
+            ResultSet rs = stmt.executeQuery();
 
-    // Percorre todos os usuários encontrados no banco
-    while (rs.next()) {
-        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
-        cbTurma.addItem(rs.getString("id"));
-    }
+            // Percorre todas as turmas encontradas no banco
+            while (rs.next()) {
+                // Adiciona apenas o NOME da turma na ComboBox
+                cbTurma.addItem(rs.getString("nome_turma"));
+            }
 
-    // Fecha os recursos na ordem correta
-    rs.close();
-    stmt.close();
-    conn.close();
-    
-} catch(Exception e) {
-    e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
-}
+            rs.close();
+            stmt.close();
+            conn.close();
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao carregar turmas: " + e.getMessage());
+        }
     }
 
     /**
@@ -158,24 +154,49 @@ public class NovosAlunos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrar1ActionPerformed
-        String turma = (String) cbTurma.getSelectedItem();
-        try{
+         String nomeTurmaSelecionada = (String) cbTurma.getSelectedItem();
+        
+        if (nomeTurmaSelecionada == null) {
+            JOptionPane.showMessageDialog(null, "Selecione uma turma!");
+            return;
+        }
+
+        String turmaIdStr = ""; // Variável que vai guardar o ID encontrado
+
+        try {
             Connection conn = conexao.conexao.conectar();
 
-            String sql="INSERT INTO alunos(nome,matricula,turma_id) VALUES (?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,txtNome.getText());
-            stmt.setString(2,txtMatricula.getText());
-            stmt.setString(3,turma);
+            // 1º PASSO: Descobrir o ID com base no nome selecionado
+            String sqlBuscaId = "SELECT id FROM turmas WHERE nome_turma = ?";
+            PreparedStatement stmtBusca = conn.prepareStatement(sqlBuscaId);
+            stmtBusca.setString(1, nomeTurmaSelecionada);
+            ResultSet rsBusca = stmtBusca.executeQuery();
 
-            stmt.execute();
+            if (rsBusca.next()) {
+                // Guarda o ID como String
+                turmaIdStr = rsBusca.getString("id");
+            }
+            
+            rsBusca.close();
+            stmtBusca.close();
+
+            // 2º PASSO: Inserir o aluno usando o ID encontrado
+            String sqlInsert = "INSERT INTO alunos(nome, matricula, turma_id) VALUES (?, ?, ?)";
+            PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert);
+            stmtInsert.setString(1, txtNome.getText());
+            stmtInsert.setString(2, txtMatricula.getText());
+            stmtInsert.setString(3, turmaIdStr); // Aqui vai a String com o ID
+
+            stmtInsert.execute();
             JOptionPane.showMessageDialog(null, "Salvo!");
-            stmt.close();
+            
+            stmtInsert.close();
             conn.close();
-        }catch(Exception e){
+            
+        } catch(Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage());
         }
-        
     }//GEN-LAST:event_btnCadastrar1ActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
