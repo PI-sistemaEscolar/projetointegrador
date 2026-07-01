@@ -3,6 +3,7 @@ package Alunos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 /*
@@ -24,7 +25,7 @@ public class NotaAluno extends javax.swing.JFrame {
     Connection conn = conexao.conexao.conectar();
 
     // Limpa os itens antigos da combo box para não duplicar
-    cbAluno.removeAllItems();
+    cbxAluno.removeAllItems();
 
     // Comando SQL para buscar os usuários
     String Sql = "select nome from alunos order by nome asc;";
@@ -37,7 +38,7 @@ public class NotaAluno extends javax.swing.JFrame {
     // Percorre todos os usuários encontrados no banco
     while (rs.next()) {
         // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
-        cbAluno.addItem(rs.getString("nome"));
+        cbxAluno.addItem(rs.getString("nome"));
     }
 
     // Fecha os recursos na ordem correta
@@ -48,6 +49,63 @@ public class NotaAluno extends javax.swing.JFrame {
 } catch(Exception e) {
     e.printStackTrace();
     JOptionPane.showMessageDialog(null, "Nota Lançada! " + e.getMessage());
+}
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para poder manipular os itens da JList de notas
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+
+    // Pega o nome do aluno selecionado na ComboBox
+    String nomeAlunoSelecionado = cbxAluno.getSelectedItem().toString();
+
+    // Comando SQL que junta alunos e notas filtrando pelo nome do aluno selecionado
+    String Sql = "SELECT n.nota FROM notas n " +
+                 "INNER JOIN alunos a ON n.aluno_id = a.id " +
+                 "WHERE a.nome = ?;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    // Substitui o primeiro '?' pelo nome do aluno selecionado
+    stmt.setString(1, nomeAlunoSelecionado);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    double somaNotas = 0;
+    int totalNotas = 0;
+
+    // Percorre todas as notas encontradas para esse aluno
+    while (rs.next()) {
+        double nota = rs.getDouble("nota");
+        
+        // Adiciona a nota formatada como texto no modelo da JList
+        modeloLista.addElement(String.valueOf(nota));
+        
+        // Acumula os valores para calcular a média depois
+        somaNotas += nota;
+        totalNotas++;
+    }
+
+    // Aplica o modelo preenchido na sua JList de notas (atualiza a interface)
+    lstNotas.setModel(modeloLista);
+
+    // Calcula a média e atualiza o lblMedia (evita divisão por zero se não houver notas)
+    if (totalNotas > 0) {
+        double media = somaNotas / totalNotas;
+        lblMedia.setText(String.format("%.2f", media));
+    } else {
+        lblMedia.setText("0.00");
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
 }
     }
 
@@ -61,34 +119,34 @@ public class NotaAluno extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        cbAluno = new javax.swing.JComboBox<>();
+        cbxAluno = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtNota = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        lstNotas = new javax.swing.JList<>();
         btnLancar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblMedia = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel1.setText("LANÇAR NOTAS");
 
-        cbAluno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxAluno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setText("Nome Aluno");
 
         jLabel3.setText("Nota");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        lstNotas.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lstNotas);
 
         btnLancar.setText("LANÇAR");
         btnLancar.addActionListener(new java.awt.event.ActionListener() {
@@ -107,8 +165,8 @@ public class NotaAluno extends javax.swing.JFrame {
 
         jLabel4.setText("MÉDIA:");
 
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel5.setText("txtMedia");
+        lblMedia.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblMedia.setText("txtMedia");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,7 +178,7 @@ public class NotaAluno extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cbAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbxAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -132,7 +190,7 @@ public class NotaAluno extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(lblMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -153,7 +211,7 @@ public class NotaAluno extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbAluno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbxAluno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -166,7 +224,7 @@ public class NotaAluno extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                            .addComponent(lblMedia))
                         .addGap(6, 6, 6)))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
@@ -181,7 +239,7 @@ public class NotaAluno extends javax.swing.JFrame {
     private void btnLancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLancarActionPerformed
     
         
-        String Aluno = (String) cbAluno.getSelectedItem();
+        String Aluno = (String) cbxAluno.getSelectedItem();
         String alunoIdStr = "";
         try{ Connection conn = conexao.conexao.conectar();
         
@@ -207,6 +265,63 @@ public class NotaAluno extends javax.swing.JFrame {
     conn.close();   
     }catch(Exception e){
             e.printStackTrace();
+}
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para poder manipular os itens da JList de notas
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+
+    // Pega o nome do aluno selecionado na ComboBox
+    String nomeAlunoSelecionado = cbxAluno.getSelectedItem().toString();
+
+    // Comando SQL que junta alunos e notas filtrando pelo nome do aluno selecionado
+    String Sql = "SELECT n.nota FROM notas n " +
+                 "INNER JOIN alunos a ON n.aluno_id = a.id " +
+                 "WHERE a.nome = ?;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    // Substitui o primeiro '?' pelo nome do aluno selecionado
+    stmt.setString(1, nomeAlunoSelecionado);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    double somaNotas = 0;
+    int totalNotas = 0;
+
+    // Percorre todas as notas encontradas para esse aluno
+    while (rs.next()) {
+        double nota = rs.getDouble("nota");
+        
+        // Adiciona a nota formatada como texto no modelo da JList
+        modeloLista.addElement(String.valueOf(nota));
+        
+        // Acumula os valores para calcular a média depois
+        somaNotas += nota;
+        totalNotas++;
+    }
+
+    // Aplica o modelo preenchido na sua JList de notas (atualiza a interface)
+    lstNotas.setModel(modeloLista);
+
+    // Calcula a média e atualiza o lblMedia (evita divisão por zero se não houver notas)
+    if (totalNotas > 0) {
+        double media = somaNotas / totalNotas;
+        lblMedia.setText(String.format("%.2f", media));
+    } else {
+        lblMedia.setText("0.00");
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
 }
     }//GEN-LAST:event_btnLancarActionPerformed
 
@@ -247,15 +362,15 @@ public class NotaAluno extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLancar;
-    private javax.swing.JComboBox<String> cbAluno;
+    private javax.swing.JComboBox<String> cbxAluno;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblMedia;
+    private javax.swing.JList<String> lstNotas;
     private javax.swing.JTextField txtNota;
     // End of variables declaration//GEN-END:variables
 }

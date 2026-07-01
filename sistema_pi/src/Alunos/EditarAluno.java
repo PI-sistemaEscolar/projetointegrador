@@ -164,6 +164,27 @@ public class EditarAluno extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+<<<<<<< HEAD
+        String sql = "SELECT nome, turma from alunos WHERE matricula = ?";
+        try{
+            Connection conn = conexao.conexao.conectar();
+            
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            stmt.setString(1,txtUsuario.getText());
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()){
+                txtNome.setText(rs.getString("nome"));
+                cbTurma.setSelectedItem(rs.getString("turma"));
+            } else {
+                txtNome.setText("");
+                cbTurma.setSelectedIndex(-1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+=======
         String turma = (String) cbTurma.getSelectedItem();
         int turma_id;
         try {
@@ -206,6 +227,7 @@ public class EditarAluno extends javax.swing.JFrame {
         e.printStackTrace();
     }
 
+>>>>>>> 03324ebcb38d9d49f606ac34798edecaf658785c
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
