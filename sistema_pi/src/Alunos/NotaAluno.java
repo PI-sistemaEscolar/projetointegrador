@@ -48,7 +48,6 @@ public class NotaAluno extends javax.swing.JFrame {
     
 } catch(Exception e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "Nota Lançada! " + e.getMessage());
 }
         try {
     // Abre a conexão usando a sua classe de conexão
@@ -105,7 +104,7 @@ public class NotaAluno extends javax.swing.JFrame {
     
 } catch(Exception e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
+    
 }
     }
 
@@ -326,38 +325,14 @@ public class NotaAluno extends javax.swing.JFrame {
     
 } catch(Exception e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
+    
 }
     }//GEN-LAST:event_btnLancarActionPerformed
 
     private void cbxAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxAlunoActionPerformed
         String Aluno = (String) cbxAluno.getSelectedItem();
         String alunoIdStr = "";
-        try{ Connection conn = conexao.conexao.conectar();
-        
-            String sqlBuscaId = "SELECT id FROM alunos WHERE nome = ?";
-            PreparedStatement stmtBusca = conn.prepareStatement(sqlBuscaId);
-            stmtBusca.setString(1, Aluno);
-            ResultSet rsBusca = stmtBusca.executeQuery();
-            
-            if (rsBusca.next()) {
-                // Guarda o ID como String
-                alunoIdStr = rsBusca.getString("id");
-            }
-    
-    String sql="INSERT INTO notas (aluno_Id,nota) VALUES (?,?)";
-    
-    PreparedStatement stmt = conn.prepareStatement(sql);
-    
-    stmt.setString(1,alunoIdStr);
-    stmt.setString(2,txtNota.getText());
-    JOptionPane.showMessageDialog(null, "Salvo!");
-    stmt.execute();
-    stmt.close();
-    conn.close();   
-    }catch(Exception e){
-            e.printStackTrace();
-}
+       
         try {
     // Abre a conexão usando a sua classe de conexão
     Connection conn = conexao.conexao.conectar();
@@ -413,7 +388,7 @@ public class NotaAluno extends javax.swing.JFrame {
     
 } catch(Exception e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
+   
 }
     }//GEN-LAST:event_cbxAlunoActionPerformed
 
