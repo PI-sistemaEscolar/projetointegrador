@@ -4,7 +4,13 @@ package Alunos;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author guest.jb
@@ -16,6 +22,53 @@ public class OpcoesAlunos extends javax.swing.JFrame {
      */
     public OpcoesAlunos() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para manipular as colunas e linhas da JTable
+    DefaultTableModel modeloTabela = new DefaultTableModel();
+    
+    // Define os cabeçalhos das 3 colunas solicitadas
+    modeloTabela.addColumn("Matrícula");
+    modeloTabela.addColumn("Aluno");
+    modeloTabela.addColumn("Turma");
+
+    // Comando SQL com JOIN para buscar os dados de alunos e o nome da turma relacionado
+    String Sql = "SELECT a.matricula, a.nome, t.nome_turma " +
+                 "FROM alunos a " +
+                 "INNER JOIN turmas t ON a.turma_id = t.id " +
+                 "ORDER BY a.nome ASC;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os alunos encontrados no banco
+    while (rs.next()) {
+        // Cria um vetor com os dados da linha atual na ordem correta
+        Object[] linha = {
+            rs.getString("matricula"),
+            rs.getString("nome"),
+            rs.getString("nome_turma") // ID resolvido no JOIN
+        };
+        // Adiciona a linha estruturada no modelo da tabela
+        modeloTabela.addRow(linha);
+    }
+
+    // Aplica o modelo preenchido na sua JTable (atualiza a interface)
+    tblAlunos.setModel(modeloTabela);
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar alunos: " + e.getMessage());
+}
     }
 
     /**
@@ -30,7 +83,7 @@ public class OpcoesAlunos extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblAlunos = new javax.swing.JTable();
         Adicionar = new javax.swing.JButton();
         btnNota = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
@@ -44,7 +97,7 @@ public class OpcoesAlunos extends javax.swing.JFrame {
 
         jLabel2.setText("Alunos cadastrados");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblAlunos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -57,7 +110,7 @@ public class OpcoesAlunos extends javax.swing.JFrame {
                 "Matricula", "Aluno", "Turma"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblAlunos);
 
         Adicionar.setText("ADICIONAR");
         Adicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -214,6 +267,6 @@ public class OpcoesAlunos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblAlunos;
     // End of variables declaration//GEN-END:variables
 }
