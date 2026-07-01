@@ -16,9 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class NotaAluno extends javax.swing.JFrame {
 
-    /**
-     * Creates new form NotaAluno
-     */
+    
     public NotaAluno() {
         initComponents();
         try {
@@ -69,7 +67,7 @@ public class NotaAluno extends javax.swing.JFrame {
         txtNota = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        btnLancar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -92,10 +90,10 @@ public class NotaAluno extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jList1);
 
-        jButton1.setText("LANÇAR");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLancar.setText("LANÇAR");
+        btnLancar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLancarActionPerformed(evt);
             }
         });
 
@@ -138,7 +136,7 @@ public class NotaAluno extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnLancar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 107, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -163,7 +161,7 @@ public class NotaAluno extends javax.swing.JFrame {
                             .addComponent(txtNota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
+                            .addComponent(btnLancar)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -180,15 +178,28 @@ public class NotaAluno extends javax.swing.JFrame {
       this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    String Aluno = (String) cbAluno.getSelectedItem();
-        try{ Connection conn = conexao.conexao.conectar();
+    private void btnLancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLancarActionPerformed
     
-    String sql="INSERT INTO notas (nome,nota) VALUES (?,?)";
+        
+        String Aluno = (String) cbAluno.getSelectedItem();
+        String alunoIdStr = "";
+        try{ Connection conn = conexao.conexao.conectar();
+        
+            String sqlBuscaId = "SELECT id FROM alunos WHERE nome = ?";
+            PreparedStatement stmtBusca = conn.prepareStatement(sqlBuscaId);
+            stmtBusca.setString(1, Aluno);
+            ResultSet rsBusca = stmtBusca.executeQuery();
+            
+            if (rsBusca.next()) {
+                // Guarda o ID como String
+                alunoIdStr = rsBusca.getString("id");
+            }
+    
+    String sql="INSERT INTO notas (aluno_Id,nota) VALUES (?,?)";
     
     PreparedStatement stmt = conn.prepareStatement(sql);
     
-    stmt.setString(1,Aluno);
+    stmt.setString(1,alunoIdStr);
     stmt.setString(2,txtNota.getText());
     JOptionPane.showMessageDialog(null, "Salvo!");
     stmt.execute();
@@ -197,7 +208,7 @@ public class NotaAluno extends javax.swing.JFrame {
     }catch(Exception e){
             e.printStackTrace();
 }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnLancarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -235,8 +246,8 @@ public class NotaAluno extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLancar;
     private javax.swing.JComboBox<String> cbAluno;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
