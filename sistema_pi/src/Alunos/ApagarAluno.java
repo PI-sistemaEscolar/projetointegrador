@@ -122,64 +122,50 @@ public class ApagarAluno extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         String senhaDigitada = txtSenha.getText();
-        String usuarioSelecionado = txtMatricula.getText();
-        if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
+String usuarioSelecionado = txtMatricula.getText();
+
+if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
     JOptionPane.showMessageDialog(null, "Informe uma Matricula para excluir!");
-} else if (senhaDigitada.trim().isEmpty()) {
-    JOptionPane.showMessageDialog(null, "Digite a senha para confirmar a exclusão!");
-} else {
-    
-    try {
-        Connection conn = conexao.conexao.conectar();
+}
+ else {
+    // Validação direta em memória com a sessão logada
+    if (senhaDigitada.equals(telasIniciais.InfoSessao.senhaLogada)) {
+        try {
+            Connection conn = conexao.conexao.conectar();
 
-        // SQL para buscar a senha correta do usuário selecionado
-        String sqlBuscar = "select senha from usuarios where usuario = ?;";
-        PreparedStatement stmtBuscar = conn.prepareStatement(sqlBuscar);
-        stmtBuscar.setString(1, usuarioSelecionado);
-        
-        ResultSet rs = stmtBuscar.executeQuery();
-
-        // Verifica se encontrou o usuário no banco
-        if (rs.next()) {
-            String senhaDoBanco = rs.getString("senha");
-
-            // Compara a senha digitada com a senha do banco usando .equals()
-            if (senhaDigitada.equals(senhaDoBanco)) {
-                
-                // SQL para deletar o usuário
-                String sqlDeletar = "delete from alunos where matricula = ?;";
-                PreparedStatement stmtDeletar = conn.prepareStatement(sqlDeletar);
-                stmtDeletar.setString(1, usuarioSelecionado);
-                
-                stmtDeletar.execute();
-                
+            // SQL para deletar o aluno pela matrícula informada
+            String sqlDeletar = "DELETE FROM alunos WHERE matricula = ?;";
+            PreparedStatement stmtDeletar = conn.prepareStatement(sqlDeletar);
+            stmtDeletar.setString(1, usuarioSelecionado);
+            
+            // Executa a exclusão e retorna quantas linhas foram afetadas
+            int linhasAfetadas = stmtDeletar.executeUpdate();
+            
+            if (linhasAfetadas > 0) {
                 JOptionPane.showMessageDialog(null, "Aluno excluído com sucesso!");
                 
-                // Limpa o campo de senha
+                // Limpa os campos após a exclusão bem-sucedida
                 txtSenha.setText("");
+                txtMatricula.setText(""); 
                 
-                // ATUALIZAÇÃO AUTOMÁTICA: Recarrega a combo box para sumir o usuário deletado
-               
-                
-                stmtDeletar.close();
+                // Se precisar recarregar a tela ou componentes, insira a chamada aqui
             } else {
-                JOptionPane.showMessageDialog(null, "Senha incorreta! Não foi possível excluir.");
+                JOptionPane.showMessageDialog(null, "Nenhum aluno encontrado com a matrícula informada.");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Usuário não encontrado no sistema.");
+            
+            stmtDeletar.close();
+            conn.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao tentar excluir: " + e.getMessage());
         }
-
-        // Fecha os recursos de leitura
-        rs.close();
-        stmtBuscar.close();
-        conn.close();
-
-    } catch(Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Erro ao tentar excluir: " + e.getMessage());
+    } else {
+        JOptionPane.showMessageDialog(null, "Senha incorreta! Não foi possível excluir.");
     }
+}
     }//GEN-LAST:event_btnDeleteActionPerformed
-    }
+    
     /**
      * @param args the command line arguments
      */
