@@ -167,12 +167,12 @@ public class EditarAluno extends javax.swing.JFrame {
         String turma = (String) cbTurma.getSelectedItem();
     try {
         Connection conn = conexao.conexao.conectar();
-                String sql = "UPDATE alunos SET matricula =?, nome =? WHERE matricula = ?"; 
+                String sql = "UPDATE alunos SET nome =? WHERE matricula =?"; 
 
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, Integer.parseInt(txtUsuario.getText())); 
-        stmt.setString(2, txtNome.getText()); 
-        stmt.setString(3, turma); 
+        
+        stmt.setString(1, txtNome.getText()); 
+        stmt.setString(2, turma); 
         
         stmt.execute();
         
