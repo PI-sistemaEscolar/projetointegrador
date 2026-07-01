@@ -34,7 +34,7 @@ public class NovosAlunos extends javax.swing.JFrame {
     // Percorre todos os usuários encontrados no banco
     while (rs.next()) {
         // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
-        cbTurma.addItem(rs.getString("nome_turma"));
+        cbTurma.addItem(rs.getString("id"));
     }
 
     // Fecha os recursos na ordem correta
@@ -162,10 +162,10 @@ public class NovosAlunos extends javax.swing.JFrame {
         try{
             Connection conn = conexao.conexao.conectar();
 
-            String sql="INSERT INTO aluno(nome,matricula,turma) VALUES (?,?,?)";
+            String sql="INSERT INTO alunos(nome,matricula,turma_id) VALUES (?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,txtNome.getText());
-            stmt.setInt(2,Integer.parseInt(txtMatricula.getText()));
+            stmt.setString(2,txtMatricula.getText());
             stmt.setString(3,turma);
 
             stmt.execute();

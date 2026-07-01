@@ -1,9 +1,9 @@
 package Alunos;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
 
 /**
  *
@@ -33,7 +33,7 @@ public class ApagarAluno extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtSenha = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -50,7 +50,12 @@ public class ApagarAluno extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel4.setText("ATENÇÃO: ESSA AÇÃO NÃO PODE SER DESFEITA");
 
-        jButton1.setText("APAGAR");
+        btnDelete.setText("APAGAR");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         jButton2.setText("VOLTAR");
@@ -82,7 +87,7 @@ public class ApagarAluno extends javax.swing.JFrame {
                         .addGap(0, 127, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -102,7 +107,7 @@ public class ApagarAluno extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btnDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addContainerGap())
@@ -115,6 +120,66 @@ public class ApagarAluno extends javax.swing.JFrame {
        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        String senhaDigitada = txtSenha.getText();
+        String usuarioSelecionado = txtMatricula.getText();
+        if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Informe uma Matricula para excluir!");
+} else if (senhaDigitada.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Digite a senha para confirmar a exclusão!");
+} else {
+    
+    try {
+        Connection conn = conexao.conexao.conectar();
+
+        // SQL para buscar a senha correta do usuário selecionado
+        String sqlBuscar = "select senha from usuarios where usuario = ?;";
+        PreparedStatement stmtBuscar = conn.prepareStatement(sqlBuscar);
+        stmtBuscar.setString(1, usuarioSelecionado);
+        
+        ResultSet rs = stmtBuscar.executeQuery();
+
+        // Verifica se encontrou o usuário no banco
+        if (rs.next()) {
+            String senhaDoBanco = rs.getString("senha");
+
+            // Compara a senha digitada com a senha do banco usando .equals()
+            if (senhaDigitada.equals(senhaDoBanco)) {
+                
+                // SQL para deletar o usuário
+                String sqlDeletar = "delete from alunos where matricula = ?;";
+                PreparedStatement stmtDeletar = conn.prepareStatement(sqlDeletar);
+                stmtDeletar.setString(1, usuarioSelecionado);
+                
+                stmtDeletar.execute();
+                
+                JOptionPane.showMessageDialog(null, "Aluno excluído com sucesso!");
+                
+                // Limpa o campo de senha
+                txtSenha.setText("");
+                
+                // ATUALIZAÇÃO AUTOMÁTICA: Recarrega a combo box para sumir o usuário deletado
+               
+                
+                stmtDeletar.close();
+            } else {
+                JOptionPane.showMessageDialog(null, "Senha incorreta! Não foi possível excluir.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuário não encontrado no sistema.");
+        }
+
+        // Fecha os recursos de leitura
+        rs.close();
+        stmtBuscar.close();
+        conn.close();
+
+    } catch(Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Erro ao tentar excluir: " + e.getMessage());
+    }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+    }
     /**
      * @param args the command line arguments
      */
@@ -151,7 +216,7 @@ public class ApagarAluno extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
