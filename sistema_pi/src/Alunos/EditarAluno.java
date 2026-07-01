@@ -63,7 +63,7 @@ public class EditarAluno extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtUsuario = new javax.swing.JTextField();
+        txtMatricula = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
@@ -110,7 +110,7 @@ public class EditarAluno extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -138,7 +138,7 @@ public class EditarAluno extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -164,70 +164,58 @@ public class EditarAluno extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-<<<<<<< HEAD
-        String sql = "SELECT nome, turma from alunos WHERE matricula = ?";
-        try{
-            Connection conn = conexao.conexao.conectar();
-            
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            
-            stmt.setString(1,txtUsuario.getText());
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()){
-                txtNome.setText(rs.getString("nome"));
-                cbTurma.setSelectedItem(rs.getString("turma"));
-            } else {
-                txtNome.setText("");
-                cbTurma.setSelectedIndex(-1);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-=======
         String turma = (String) cbTurma.getSelectedItem();
-        int turma_id;
-        try {
-        Connection conn = conexao.conexao.conectar();
-                String sql = "select id from turmas where nome_turma = ?"; 
+int turma_id = 0; // 1. Inicializado com valor padrão para evitar erro de compilação
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, turma); 
-        
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
-        turma_id = (rs.getValue("id"));
+try {
+    // Abre a conexão única para toda a operação
+    Connection conn = conexao.conexao.conectar();
+    
+    // ==========================================
+    // PARTE 1: BUSCAR O ID DA TURMA PELO NOME
+    // ==========================================
+    String sqlBusca = "select id from turmas where nome_turma = ?"; 
+    PreparedStatement stmtBusca = conn.prepareStatement(sqlBusca);
+    stmtBusca.setString(1, turma); 
+    
+    ResultSet rs = stmtBusca.executeQuery();
+    if (rs.next()) { // Mudado de 'while' para 'if' pois só esperamos um ID por turma
+        turma_id = rs.getInt("id"); // 2. CORRIGIDO: Usando getInt() em vez de getValue()
     }
-        
-        JOptionPane.showMessageDialog(null, "Atualizado");
-        stmt.close();
+    rs.close();
+    stmtBusca.close();
+
+    // Validação caso a turma não exista no banco
+    if (turma_id == 0) {
+        JOptionPane.showMessageDialog(null, "Turma não encontrada!");
         conn.close();
-        
-    } catch(Exception e) {
-        e.printStackTrace();
-    }
-    try {
-        Connection conn = conexao.conexao.conectar();
-                String sql = "UPDATE alunos SET nome =? WHERE matricula =?"; 
-
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, txtNome.getText()); 
-        stmt.setString(2, turma); 
-        
-        stmt.execute();
-        
-        JOptionPane.showMessageDialog(null, "Atualizado");
-        stmt.close();
-        conn.close();
-        
-    } catch(Exception e) {
-        e.printStackTrace();
+        return; // Interrompe a execução
     }
 
->>>>>>> 03324ebcb38d9d49f606ac34798edecaf658785c
+    // ==========================================
+    // PARTE 2: ATUALIZAR OS DADOS DO ALUNO
+    // ==========================================
+    // Adicionado o campo turma_id no SET para que a mudança de turma funcione de verdade
+    String sqlUpdate = "UPDATE alunos SET nome = ?, turma_id = ? WHERE matricula = ?;"; 
+    PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate);
+    
+    stmtUpdate.setString(1, txtNome.getText());     // Primeiro ? (Nome do campo de texto)
+    stmtUpdate.setInt(2, turma_id);                 // Segundo ? (O ID numérico que descobrimos)
+    stmtUpdate.setString(3, txtMatricula.getText());// Terceiro ? (A matrícula para identificar o aluno)
+    
+    // Executa a atualização no banco de dados
+    stmtUpdate.executeUpdate(); 
+    
+    JOptionPane.showMessageDialog(null, "Aluno atualizado com sucesso!");
+    
+    // Fecha os recursos restantes
+    stmtUpdate.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + e.getMessage());
+}
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
@@ -274,7 +262,7 @@ public class EditarAluno extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextField txtMatricula;
     private javax.swing.JTextField txtNome;
-    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

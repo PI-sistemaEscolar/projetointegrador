@@ -21,6 +21,7 @@ public class RemoverUsuario extends javax.swing.JFrame {
      */
     public RemoverUsuario() {
         initComponents();
+        
         try {
     // Abre a conexão usando a sua classe de conexão
     Connection conn = conexao.conexao.conectar();
@@ -173,10 +174,10 @@ public class RemoverUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxUsuarioActionPerformed
 
     private void btnApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApagarActionPerformed
+
         // 1. Pega o usuário que está selecionado na sua ComboBox
 String usuarioSelecionado = (String) cbxUsuario.getSelectedItem();
 String senhaDigitada = txtSenha.getText();
-
 // Validação básica se há algum usuário selecionado e se a senha não está vazia
 if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
     JOptionPane.showMessageDialog(null, "Selecione um usuário para excluir!");

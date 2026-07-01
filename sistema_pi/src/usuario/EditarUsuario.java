@@ -177,6 +177,7 @@ public class EditarUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+       
         String usuarioSelecionado = (String) cbxUsuario.getSelectedItem();
 String senhaDigitada = txtSenha.getText();
 // Novos inputs adicionados para a alteração
@@ -247,6 +248,7 @@ if (usuarioSelecionado == null || usuarioSelecionado.trim().isEmpty()) {
         JOptionPane.showMessageDialog(null, "Erro ao tentar alterar: " + e.getMessage());
     }
 }
+    
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**

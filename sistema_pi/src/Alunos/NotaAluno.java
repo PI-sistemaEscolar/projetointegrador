@@ -136,6 +136,11 @@ public class NotaAluno extends javax.swing.JFrame {
         jLabel1.setText("LANÇAR NOTAS");
 
         cbxAluno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxAluno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxAlunoActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Nome Aluno");
 
@@ -324,6 +329,93 @@ public class NotaAluno extends javax.swing.JFrame {
     JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
 }
     }//GEN-LAST:event_btnLancarActionPerformed
+
+    private void cbxAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxAlunoActionPerformed
+        String Aluno = (String) cbxAluno.getSelectedItem();
+        String alunoIdStr = "";
+        try{ Connection conn = conexao.conexao.conectar();
+        
+            String sqlBuscaId = "SELECT id FROM alunos WHERE nome = ?";
+            PreparedStatement stmtBusca = conn.prepareStatement(sqlBuscaId);
+            stmtBusca.setString(1, Aluno);
+            ResultSet rsBusca = stmtBusca.executeQuery();
+            
+            if (rsBusca.next()) {
+                // Guarda o ID como String
+                alunoIdStr = rsBusca.getString("id");
+            }
+    
+    String sql="INSERT INTO notas (aluno_Id,nota) VALUES (?,?)";
+    
+    PreparedStatement stmt = conn.prepareStatement(sql);
+    
+    stmt.setString(1,alunoIdStr);
+    stmt.setString(2,txtNota.getText());
+    JOptionPane.showMessageDialog(null, "Salvo!");
+    stmt.execute();
+    stmt.close();
+    conn.close();   
+    }catch(Exception e){
+            e.printStackTrace();
+}
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para poder manipular os itens da JList de notas
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+
+    // Pega o nome do aluno selecionado na ComboBox
+    String nomeAlunoSelecionado = cbxAluno.getSelectedItem().toString();
+
+    // Comando SQL que junta alunos e notas filtrando pelo nome do aluno selecionado
+    String Sql = "SELECT n.nota FROM notas n " +
+                 "INNER JOIN alunos a ON n.aluno_id = a.id " +
+                 "WHERE a.nome = ?;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    // Substitui o primeiro '?' pelo nome do aluno selecionado
+    stmt.setString(1, nomeAlunoSelecionado);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    double somaNotas = 0;
+    int totalNotas = 0;
+
+    // Percorre todas as notas encontradas para esse aluno
+    while (rs.next()) {
+        double nota = rs.getDouble("nota");
+        
+        // Adiciona a nota formatada como texto no modelo da JList
+        modeloLista.addElement(String.valueOf(nota));
+        
+        // Acumula os valores para calcular a média depois
+        somaNotas += nota;
+        totalNotas++;
+    }
+
+    // Aplica o modelo preenchido na sua JList de notas (atualiza a interface)
+    lstNotas.setModel(modeloLista);
+
+    // Calcula a média e atualiza o lblMedia (evita divisão por zero se não houver notas)
+    if (totalNotas > 0) {
+        double media = somaNotas / totalNotas;
+        lblMedia.setText(String.format("%.2f", media));
+    } else {
+        lblMedia.setText("0.00");
+    }
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar notas: " + e.getMessage());
+}
+    }//GEN-LAST:event_cbxAlunoActionPerformed
 
     /**
      * @param args the command line arguments
