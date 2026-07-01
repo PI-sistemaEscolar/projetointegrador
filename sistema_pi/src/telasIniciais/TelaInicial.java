@@ -16,6 +16,7 @@ public class TelaInicial extends javax.swing.JFrame {
      */
     public TelaInicial() {
         initComponents();
+        lblUsuarioAtual.setText(telasIniciais.InfoSessao.usuarioLogado);
     }
 
     /**
@@ -31,7 +32,7 @@ public class TelaInicial extends javax.swing.JFrame {
         btnAlunos = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtUsuarioAtual = new javax.swing.JLabel();
+        lblUsuarioAtual = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -57,9 +58,9 @@ public class TelaInicial extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText("Usuário atual:");
 
-        txtUsuarioAtual.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txtUsuarioAtual.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        txtUsuarioAtual.setText("txtUsuarioAtual");
+        lblUsuarioAtual.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblUsuarioAtual.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblUsuarioAtual.setText("lblUsuarioAtual");
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         jButton3.setText("USUÁRIOS");
@@ -85,7 +86,7 @@ public class TelaInicial extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtUsuarioAtual, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(lblUsuarioAtual, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(137, 137, 137)
@@ -109,7 +110,7 @@ public class TelaInicial extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(5, 5, 5)
-                        .addComponent(txtUsuarioAtual)))
+                        .addComponent(lblUsuarioAtual)))
                 .addContainerGap())
         );
 
@@ -178,6 +179,6 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel txtUsuarioAtual;
+    private javax.swing.JLabel lblUsuarioAtual;
     // End of variables declaration//GEN-END:variables
 }

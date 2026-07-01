@@ -53,23 +53,23 @@ public class telaLogin extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(105, 105, 105)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(47, 47, 47)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(63, Short.MAX_VALUE))
+                                    .addComponent(txtUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                                    .addComponent(txtSenha)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +93,62 @@ public class telaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        String usuarioDigitado = txtUsuario.getText();
+String senhaDigitada = txtSenha.getText();
+
+// Validação básica se os campos estão vazios
+if (usuarioDigitado.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Por favor, digite o usuário!");
+} else if (senhaDigitada.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Por favor, digite a senha!");
+} else {
+    
+    try {
+        Connection conn = conexao.conexao.conectar();
+
+        // SQL para buscar o usuário e a senha correspondentes
+        String sqlBuscar = "select usuario, senha from usuarios where usuario = ?;";
+        PreparedStatement stmtBuscar = conn.prepareStatement(sqlBuscar);
+        stmtBuscar.setString(1, usuarioDigitado);
         
+        ResultSet rs = stmtBuscar.executeQuery();
+
+        // Verifica se encontrou o usuário no banco
+        if (rs.next()) {
+            String senhaDoBanco = rs.getString("senha");
+            String usuarioDoBanco = rs.getString("usuario");
+
+            // Compara a senha digitada com a senha do banco usando .equals()
+            if (senhaDigitada.equals(senhaDoBanco)) {
+                
+                // SALVA OS DADOS NAS VARIÁVEIS DA SESSÃO
+                InfoSessao.usuarioLogado = usuarioDoBanco;
+                InfoSessao.senhaLogada = senhaDoBanco;
+                
+                JOptionPane.showMessageDialog(null, "Login realizado com sucesso! Bem-vindo, " + usuarioDoBanco + ".");
+                
+                // CÓDIGO PARA ABRIR A PRÓXIMA TELA (Exemplo):
+                TelaInicial tela = new TelaInicial();
+                tela.setVisible(true);
+                this.dispose(); // Fecha a tela de login atual
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Senha incorreta!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuário não cadastrado no sistema.");
+        }
+
+        // Fecha os recursos de leitura
+        rs.close();
+        stmtBuscar.close();
+        conn.close();
+
+    } catch(Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Erro ao tentar realizar login: " + e.getMessage());
+    }
+}
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

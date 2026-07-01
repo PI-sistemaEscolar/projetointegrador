@@ -4,6 +4,12 @@
  */
 package Turma;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author guest.jb
@@ -15,6 +21,39 @@ public class OpcoesTurma extends javax.swing.JFrame {
      */
     public OpcoesTurma() {
         initComponents();
+        try {
+    // Abre a conexão usando a sua classe de conexão
+    Connection conn = conexao.conexao.conectar();
+
+    // Cria o modelo para poder manipular os itens da JList
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+
+    // Comando SQL para buscar os usuários
+    String Sql = "select nome_turma from turmas order by nome_turma asc;";
+
+    PreparedStatement stmt = conn.prepareStatement(Sql);
+    
+    // Executa a consulta e guarda os resultados no ResultSet
+    ResultSet rs = stmt.executeQuery();
+
+    // Percorre todos os usuários encontrados no banco
+    while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona no modelo
+        modeloLista.addElement(rs.getString("nome_turma"));
+    }
+
+    // Aplica o modelo preenchido na sua JList (isso limpa os antigos e atualiza)
+    lstTurmas.setModel(modeloLista);
+
+    // Fecha os recursos na ordem correta
+    rs.close();
+    stmt.close();
+    conn.close();
+    
+} catch(Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erro ao carregar usuários: " + e.getMessage());
+}
     }
 
     /**
@@ -29,7 +68,7 @@ public class OpcoesTurma extends javax.swing.JFrame {
         lblTurmas = new javax.swing.JLabel();
         lblTurmasAtivas = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        lstTurmas = new javax.swing.JList<>();
         jSeparator1 = new javax.swing.JSeparator();
         btnAddTurma = new javax.swing.JButton();
         btnRemoverTurma = new javax.swing.JButton();
@@ -43,12 +82,12 @@ public class OpcoesTurma extends javax.swing.JFrame {
 
         lblTurmasAtivas.setText("Turmas Ativas:");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        lstTurmas.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lstTurmas);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -199,10 +238,10 @@ public class OpcoesTurma extends javax.swing.JFrame {
     private javax.swing.JButton btnEditarTurma;
     private javax.swing.JButton btnRemoverTurma;
     private javax.swing.JButton btnVoltarTurma;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblTurmas;
     private javax.swing.JLabel lblTurmasAtivas;
+    private javax.swing.JList<String> lstTurmas;
     // End of variables declaration//GEN-END:variables
 }
