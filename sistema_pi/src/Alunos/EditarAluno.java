@@ -170,7 +170,7 @@ public class EditarAluno extends javax.swing.JFrame {
             
             PreparedStatement stmt = conn.prepareStatement(sql);
             
-            stmt.setString(1,txtUsuario);
+            stmt.setString(1,txtUsuario.getText());
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()){
