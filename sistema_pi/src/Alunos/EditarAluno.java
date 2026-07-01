@@ -165,6 +165,28 @@ public class EditarAluno extends javax.swing.JFrame {
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
         String turma = (String) cbTurma.getSelectedItem();
+        int turma_id;
+        try {
+        Connection conn = conexao.conexao.conectar();
+                String sql = "select id from turmas where nome_turma = ?"; 
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, turma); 
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+        // Pega o texto da coluna "usuario" e adiciona na cbxUsuario
+        turma_id = (rs.getValue("id"));
+    }
+        
+        JOptionPane.showMessageDialog(null, "Atualizado");
+        stmt.close();
+        conn.close();
+        
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
     try {
         Connection conn = conexao.conexao.conectar();
                 String sql = "UPDATE alunos SET nome =? WHERE matricula =?"; 
