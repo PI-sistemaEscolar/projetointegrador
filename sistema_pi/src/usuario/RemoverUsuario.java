@@ -88,8 +88,6 @@ public class RemoverUsuario extends javax.swing.JFrame {
 
         jLabel3.setText("senha");
 
-        txtSenha.setText("txtSenha");
-
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(204, 0, 51));
         jLabel4.setText("ATENÇÃO: ESSA AÇÃO NÃO PODE SER DESFEITA");
