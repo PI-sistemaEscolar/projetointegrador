@@ -36,7 +36,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtUsuarioAtual" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblUsuarioAtual" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -67,7 +67,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="txtUsuarioAtual" min="-2" max="-2" attributes="0"/>
+                      <Component id="lblUsuarioAtual" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -109,13 +109,13 @@
         <Property name="text" type="java.lang.String" value="Usu&#xe1;rio atual:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="txtUsuarioAtual">
+    <Component class="javax.swing.JLabel" name="lblUsuarioAtual">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="1"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="txtUsuarioAtual"/>
+        <Property name="text" type="java.lang.String" value="lblUsuarioAtual"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton3">
