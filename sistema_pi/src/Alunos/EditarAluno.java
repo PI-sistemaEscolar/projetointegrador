@@ -164,25 +164,26 @@ public class EditarAluno extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-        String sql = "SELECT nome, turma from alunos WHERE matricula = ?";
-        try{
-            Connection conn = conexao.conexao.conectar();
-            
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            
-            stmt.setString(1,txtUsuario);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()){
-                txtNome.setText(rs.getString("nome"));
-                cbTurma.setSelectedItem(rs.getString("turma"));
-            } else {
-                txtNome.setText("");
-                cbTurma.setSelectedIndex(-1);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        String turma = (String) cbTurma.getSelectedItem();
+    try {
+        Connection conn = conexao.conexao.conectar();
+                String sql = "UPDATE alunos SET matricula =?, nome =? WHERE matricula = ?"; 
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, Integer.parseInt(txtUsuario.getText())); 
+        stmt.setString(2, txtNome.getText()); 
+        stmt.setString(3, turma); 
+        
+        stmt.execute();
+        
+        JOptionPane.showMessageDialog(null, "Atualizado");
+        stmt.close();
+        conn.close();
+        
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
